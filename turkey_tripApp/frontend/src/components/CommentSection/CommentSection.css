@@ -1,0 +1,135 @@
+.comment-section {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.comment-section .blog-header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-section .blog-header h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.comment-section nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+}
+
+.comment-section nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.comment-section .blog-content {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.comment-section article h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.comment-section article p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.comment-section article img,
+.comment-section article video {
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.comment-section .comments {
+  margin-top: 40px;
+}
+
+.comment-section .comments h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.comment-section .comments form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-section .comments textarea {
+  resize: vertical;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 100px;
+}
+
+.comment-section .comments button {
+  align-self: flex-start;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.comment-section .comments ul {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-section .related-links {
+  margin-top: 40px;
+}
+
+.comment-section .related-links h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.comment-section .related-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-section .related-links a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.comment-section .blog-footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.comment-section .blog-footer nav ul {
+  list-style: none;
+  padding: 0;
+  display: inline-flex;
+  gap: 15px;
+}
+
+.comment-section .blog-footer a {
+  color: #fff;
+  text-decoration: none;
+}
