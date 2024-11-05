@@ -2,61 +2,16 @@ const express = require('express');
 const router = express.Router();
 const blogController = require('../controllers/blogController');
 
-// Create a new blog post
-router.post('/posts', blogController.createPost);
+// GET /api/blogPosts/:id - Retrieve a specific blog post by ID
+router.get('/api/blogPosts/:id', blogController.getBlogPost);
 
-// Save a draft
-router.put('/drafts', blogController.saveDraft);
+// POST /api/blogPosts - Create a new blog post
+router.post('/api/blogPosts', blogController.createBlogPost);
 
-// Publish a post
-router.put('/publish', blogController.publishPost);
+// PUT /api/blogPosts/:id - Update an existing blog post
+router.put('/api/blogPosts/:id', blogController.updateBlogPost);
 
-// Get all published posts
-router.get('/posts', blogController.getPosts);
-
-// Get all drafts
-router.get('/drafts', blogController.getDrafts);
+// DELETE /api/blogPosts/:id - Delete a specific blog post by ID
+router.delete('/api/blogPosts/:id', blogController.deleteBlogPost);
 
 module.exports = router;
-
-Make sure the model file is updated as follows:
-
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('database', 'username', 'password', {
-  host: 'db',
-  dialect: 'mysql'
-});
-
-const BlogPost = sequelize.define('BlogPost', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  tags: {
-    type: DataTypes.STRING
-  },
-  location: {
-    type: DataTypes.STRING
-  },
-  date: {
-    type: DataTypes.DATE
-  },
-  status: {
-    type: DataTypes.ENUM('draft', 'published'),
-    defaultValue: 'draft',
-    allowNull: false
-  }
-}, {
-  tableName: 'blog_posts'
-});
-
-module.exports = BlogPost;

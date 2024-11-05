@@ -1,114 +1,50 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('turkey_tripApp', 'root', 'root', {
-  host: 'db',
-  port: 3306,
-  dialect: 'mysql',
-  logging: false,
-});
+const BlogPost = require('../models/BlogPost');
 
-const BlogPost = sequelize.define('BlogPost', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  tags: {
-    type: DataTypes.STRING,
-  },
-  location: {
-    type: DataTypes.STRING,
-  },
-  date: {
-    type: DataTypes.DATE,
-  },
-  status: {
-    type: DataTypes.ENUM('draft', 'published'),
-    allowNull: false,
-    defaultValue: 'draft',
-  },
-}, {
-  tableName: 'blog_posts',
-  timestamps: false,
-});
-
-exports.createPost = async (req, res) => {
-  const { title, content, tags, location, date } = req.body;
+exports.getBlogPost = async (req, res) => {
   try {
-    const newPost = await BlogPost.create({
-      title,
-      content,
-      tags,
-      location,
-      date,
-      status: 'draft',
-    });
-    return res.status(201).json(newPost);
-  } catch (error) {
-    return res.status(500).json({ error: 'Failed to create post' });
-  }
-};
-
-exports.saveDraft = async (req, res) => {
-  const { id, title, content, tags, location, date } = req.body;
-  try {
-    const post = await BlogPost.findByPk(id);
-    if (post) {
-      post.title = title;
-      post.content = content;
-      post.tags = tags;
-      post.location = location;
-      post.date = date;
-      post.status = 'draft';
-      await post.save();
-      return res.status(200).json(post);
+    const post = await BlogPost.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Blog post not found' });
     }
-    return res.status(404).json({ error: 'Post not found' });
+    res.json(post);
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to save draft' });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
 
-exports.publishPost = async (req, res) => {
-  const { id } = req.body;
+exports.createBlogPost = async (req, res) => {
   try {
-    const post = await BlogPost.findByPk(id);
-    if (post) {
-      post.status = 'published';
-      await post.save();
-      return res.status(200).json(post);
+    const { text, images, videos } = req.body;
+    const newPost = await BlogPost.create({ text, images, videos });
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(400).json({ message: 'Bad request', error: error.message });
+  }
+};
+
+exports.updateBlogPost = async (req, res) => {
+  try {
+    const { text, images, videos } = req.body;
+    const post = await BlogPost.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Blog post not found' });
     }
-    return res.status(404).json({ error: 'Post not found' });
+    await post.update({ text, images, videos });
+    res.json(post);
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to publish post' });
+    res.status(400).json({ message: 'Bad request', error: error.message });
   }
 };
 
-exports.getPosts = async (req, res) => {
+exports.deleteBlogPost = async (req, res) => {
   try {
-    const posts = await BlogPost.findAll({
-      where: { status: 'published' },
-    });
-    return res.status(200).json(posts);
+    const post = await BlogPost.findByPk(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Blog post not found' });
+    }
+    await post.destroy();
+    res.status(204).end();
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to retrieve posts' });
-  }
-};
-
-exports.getDrafts = async (req, res) => {
-  try {
-    const drafts = await BlogPost.findAll({
-      where: { status: 'draft' },
-    });
-    return res.status(200).json(drafts);
-  } catch (error) {
-    return res.status(500).json({ error: 'Failed to retrieve drafts' });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };

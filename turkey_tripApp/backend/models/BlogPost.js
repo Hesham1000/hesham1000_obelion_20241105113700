@@ -1,60 +1,39 @@
-const { Sequelize, Model } = require('sequelize');
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize('turkey_tripApp', 'root', 'root', {
   host: 'db',
   port: 3306,
   dialect: 'mysql',
-  logging: false,
+  logging: false
 });
 
-class BlogPost extends Model {}
-
-BlogPost.init(
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    title: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
+class BlogPost extends Model {
+  static init(sequelize) {
+    super.init({
+      text: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
-    },
-    content: {
-      type: Sequelize.TEXT,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
+      images: {
+        type: DataTypes.JSON,
+        allowNull: true
       },
-    },
-    tags: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    location: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    date: {
-      type: Sequelize.DATE,
-      allowNull: true,
-    },
-    status: {
-      type: Sequelize.ENUM,
-      values: ['draft', 'published'],
-      defaultValue: 'draft',
-      allowNull: false,
-    },
-  },
-  {
-    sequelize,
-    modelName: 'BlogPost',
-    timestamps: false,
-    tableName: 'blog_posts',
+      videos: {
+        type: DataTypes.JSON,
+        allowNull: true
+      }
+    }, {
+      sequelize,
+      modelName: 'BlogPost',
+      tableName: 'BlogPosts',
+      timestamps: false
+    });
   }
-);
+}
+
+BlogPost.init(sequelize);
 
 module.exports = BlogPost;
