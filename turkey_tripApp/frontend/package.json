@@ -15,10 +15,10 @@
         "redux": "latest"
     },
     "devDependencies": {
-        "react": "latest",
+        "axios": "latest",
         "eslint": "latest",
         "webpack": "latest",
-        "axios": "0.21.1"
+        "react": "latest"
     },
     "browserslist": {
         "production": [

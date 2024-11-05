@@ -19,7 +19,8 @@
     },
     "devDependencies": {
         "sequelize": "6.9.0",
-        "express": "4.17.1",
-        "sequelize-cli": "6.10.0"
+        "eslint": "7.32.0",
+        "sequelize-cli": "6.10.0",
+        "express": "4.17.1"
     }
 }

@@ -1,100 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './BlogPost.css';
 import axios from 'axios';
 
 function BlogPost() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [tags, setTags] = useState('');
-  const [location, setLocation] = useState('');
-  const [date, setDate] = useState('');
+  const [comments, setComments] = useState([]);
+  const [commentInput, setCommentInput] = useState('');
+  const postId = 1; // Assuming the post ID is 1 for this example
 
-  const handleSaveDraft = async () => {
-    try {
-      const response = await axios.put('https://turkey_tripApp-backend.cloud-stacks.com/api/drafts', {
-        title,
-        content,
-        tags,
-        location,
-        date,
+  useEffect(() => {
+    axios.get(`https://turkey_tripApp-backend.cloud-stacks.com/api/blog-posts/${postId}/comments`)
+      .then(response => {
+        setComments(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching comments:', error);
       });
-      if (response.status === 200) {
-        alert('Draft saved successfully');
-      }
-    } catch (error) {
-      alert('Failed to save draft');
-    }
+  }, [postId]);
+
+  const handleCommentChange = (e) => {
+    setCommentInput(e.target.value);
   };
 
-  const handlePublish = async () => {
-    try {
-      const response = await axios.put('https://turkey_tripApp-backend.cloud-stacks.com/api/publish', {
-        title,
-        content,
-        tags,
-        location,
-        date,
-      });
-      if (response.status === 200) {
-        alert('Post published successfully');
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (commentInput.trim()) {
+      try {
+        const response = await axios.post(
+          `https://turkey_tripApp-backend.cloud-stacks.com/api/blog-posts/${postId}/comments`,
+          {
+            content: commentInput.trim(),
+            author: 'Anonymous' // Assuming a default author name as 'Anonymous'
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        setComments([...comments, response.data]);
+        setCommentInput('');
+      } catch (error) {
+        console.error('Error posting comment:', error);
       }
-    } catch (error) {
-      alert('Failed to publish post');
     }
   };
 
   return (
     <div className="blog-post">
-      <header className="header">
-        <div className="logo">CompanyLogo</div>
-        <nav className="navigation-tabs">
-          <a href="/posts">View Posts</a>
-          <a href="/drafts">Drafts</a>
-          <a href="/settings">Settings</a>
+      <header className="blog-header">
+        <h1>Blog Name</h1>
+        <nav className="blog-nav">
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
         </nav>
       </header>
 
-      <main className="main-content">
-        <h1>Create new blog post</h1>
-        <form>
-          <div className="form-field">
-            <label>Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div className="form-field">
-            <label>Content</label>
+      <main className="blog-content">
+        <article className="post">
+          <h2>Trip to Turkey</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+          <img src="trip-image.jpg" alt="Trip" />
+          <video controls>
+            <source src="trip-video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </article>
+
+        <section className="comments-section">
+          <h3>Comments</h3>
+          <form onSubmit={handleCommentSubmit}>
             <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            ></textarea>
-          </div>
-          <div className="form-field">
-            <label>Tags</label>
-            <input
-              type="text"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              value={commentInput}
+              onChange={handleCommentChange}
+              placeholder="Leave a comment..."
             />
-          </div>
-          <div className="additional-links">
-            <button type="button" onClick={() => setLocation(prompt('Enter location'))}>Add Location</button>
-            <button type="button" onClick={() => setDate(prompt('Enter date'))}>Add Date</button>
-          </div>
-          <div className="action-buttons">
-            <button type="button" onClick={handleSaveDraft}>Save as Draft</button>
-            <button type="button" onClick={handlePublish}>Publish</button>
-          </div>
-        </form>
+            <button type="submit">Post Comment</button>
+          </form>
+          <ul>
+            {comments.map((comment, index) => (
+              <li key={index}>{comment.content}</li>
+            ))}
+          </ul>
+        </section>
+
+        <aside className="related-posts">
+          <h3>Related Posts</h3>
+          <ul>
+            <li><a href="/related-post-1">Related Post 1</a></li>
+            <li><a href="/related-post-2">Related Post 2</a></li>
+          </ul>
+        </aside>
       </main>
 
-      <footer className="footer">
-        <p>&copy; 2023 Company Name. All rights reserved.</p>
-        <a href="/terms">Terms and Conditions</a>
+      <footer className="blog-footer">
+        <p>Contact Information</p>
         <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
       </footer>
     </div>
   );
